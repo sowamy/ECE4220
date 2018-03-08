@@ -14,18 +14,20 @@
 #define GREENLED	4
 #define BLUELED		5
 #define PUSHBUTTON	16
-// #define PUSHBUTTON 17
-// #define PUSHBUTTON 18
-// #define PUSHBUTTON 19
-// #define PUSHBUTTON 20
+#define PUSHBUTTON1 17
+#define PUSHBUTTON2 18
+#define PUSHBUTTON3 19
+#define PUSHBUTTON4 20
 #define SPEAKER		6
 
 
 void alternateLights( int light1, int light2 );
-void speaker( int milli );
+void speaker( int milli);
+int buttonControl( void );
 
 int main( void ) {
 	short on = 1;
+	int button = 0;
 	int state = 0;
 	int frequency;
 
@@ -43,6 +45,18 @@ int main( void ) {
 
 	pinMode(PUSHBUTTON, INPUT);
 	pullUpDnControl(PUSHBUTTON, PUD_DOWN);
+
+	pinMode(PUSHBUTTON1, INPUT);
+	pullUpDnControl(PUSHBUTTON1, PUD_DOWN);
+
+	pinMode(PUSHBUTTON2, INPUT);
+	pullUpDnControl(PUSHBUTTON2, PUD_DOWN);
+
+	pinMode(PUSHBUTTON3, INPUT);
+	pullUpDnControl(PUSHBUTTON3, PUD_DOWN);
+
+	pinMode(PUSHBUTTON4, INPUT);
+	pullUpDnControl(PUSHBUTTON4, PUD_DOWN);
 
 	pinMode(SPEAKER, OUTPUT);
 
@@ -63,12 +77,6 @@ int main( void ) {
 			case 3: // TURN ON ALL LED's	
 				digitalWrite(REDLED, HIGH);
 				digitalWrite(YELLOWLED, HIGH);
-				digitalWrite(GREENLED, HIGH);
-				digitalWrite(BLUELED, HIGH);
-				state = 0;
-				break;
-			case 4: // TURE OFF ALL LED's
-				digitalWrite(REDLED, LOW);
 				digitalWrite(YELLOWLED, LOW);
 				digitalWrite(GREENLED, LOW);
 				digitalWrite(BLUELED, LOW);
@@ -96,9 +104,7 @@ int main( void ) {
 void alternateLights( int light1, int light2 ) {
 	short on = 1;
 	
-	while(on) {
-		if(	digitalRead(PUSHBUTTON) ) { on = 0; }	
-	} // END WHILE : Reads value from pushbutton
+	buttonControl();
 
 	while(1) {
 		digitalWrite(light1, HIGH);
@@ -111,10 +117,43 @@ void alternateLights( int light1, int light2 ) {
 } // END FUNCTION alternateLights
 
 void speaker( int milli ) {
+	int on = 1;
+
+	buttonControl();
+
 	while(1) {
 		digitalWrite(SPEAKER, HIGH);
 		usleep(milli);
 		digitalWrite(SPEAKER, LOW);
+
 		usleep(milli);
 	} // END WHILE : Infinite Loop
 } // END FUNCTION speaker
+
+int buttonControl() {
+	int button;
+
+	printf("Pick button (1-5): ");
+	scanf( "%d", &button );
+
+	while(1) {
+		switch( button ) {
+			case 1:
+				if( digitalRead( PUSHBUTTON ) ) { return 0; }
+				break;
+			case 2:
+				if( digitalRead( PUSHBUTTON1 ) ) { return 0; }
+				break;
+			case 3:
+				if( digitalRead( PUSHBUTTON2 ) ) { return 0; }
+				break;
+			case 4:
+				if( digitalRead( PUSHBUTTON3 ) ) { return 0; }
+				break;
+
+			case 5:
+				if( digitalRead( PUSHBUTTON4 )) {return 0; }
+				break;
+		};
+	}
+}
